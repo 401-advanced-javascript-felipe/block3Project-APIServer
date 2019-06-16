@@ -3,19 +3,20 @@
 const User = require('./users-model.js');
 
 module.exports = (capability) => {
-  
+
   return (req, res, next) => {
+    console.log(req.headers);
 
     try {
       let [authType, authString] = req.headers.authorization.split(/\s+/);
 
       switch (authType.toLowerCase()) {
-        case 'basic':
-          return _authBasic(authString);
-        case 'bearer':
-          return _authBearer(authString);
-        default:
-          return _authError();
+      case 'basic':
+        return _authBasic(authString);
+      case 'bearer':
+        return _authBearer(authString);
+      default:
+        return _authError();
       }
     } catch (e) {
       _authError();
@@ -25,7 +26,7 @@ module.exports = (capability) => {
     function _authBasic(str) {
     // str: am9objpqb2hubnk=
       let base64Buffer = Buffer.from(str, 'base64'); // <Buffer 01 02 ...>
-      let bufferString = base64Buffer.toString();    // john:mysecret
+      let bufferString = base64Buffer.toString(); // john:mysecret
       let [username, password] = bufferString.split(':'); // john='john'; mysecret='mysecret']
       let auth = {username, password}; // { username:'john', password:'mysecret' }
 
@@ -56,5 +57,5 @@ module.exports = (capability) => {
     }
 
   };
-  
+
 };

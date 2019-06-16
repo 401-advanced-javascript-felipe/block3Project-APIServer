@@ -16,6 +16,8 @@ const morgan = require('morgan');
 const errorHandler = require( `${cwd}/src/middleware/500.js`);
 const notFound = require( `${cwd}/src/middleware/404.js` );
 const v1Router = require( `${cwd}/src/api/v1.js` );
+const authRouter = require(`${cwd}/src/auth/router.js`);
+const aclRouter = require(`${cwd}/src/auth/aclRouter.js`);
 
 // Prepare the express app
 const app = express();
@@ -28,12 +30,19 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
 app.use(express.static('docs'));
-const options = require('../docs/config/swagger');
-const expressSwagger = require('express-swagger-generator')(app);
-expressSwagger(options);
+// const options = require('../docs/config/swagger');
+// const expressSwagger = require('express-swagger-generator')(app);
+// expressSwagger(options);
+
 
 // Routes
 app.use(v1Router);
+
+// Auth Routes
+app.use(authRouter);
+
+// Create Roles route
+app.use(aclRouter);
 
 // Catchalls
 app.use(notFound);
